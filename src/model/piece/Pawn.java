@@ -11,34 +11,72 @@ public class Pawn extends Piece{
 		super(color,row, col);
 		id = "pawn";
 	}
+       
+        
+	private int baseRow = (color==PieceColor.WHITE)?1:6;
+	private int rowDirection = (color==PieceColor.WHITE)?1:-1;
 	
-	private int baseRow = (color==PieceColor.WHITE)?1:Board.nRows-2;
-	private int rowDirection = (color==PieceColor.WHITE)?1:-1;// the forward direction across the row
-	
+        @Override
 	public void getMoves(){
-		if(legalVector==null) legalVector = new ArrayList<Move>(); 
+		if(legalVector==null) 
+                    legalVector = new ArrayList<Move>(); 
 		else legalVector.clear();
-		// the first movement can be 2 steps forward
-		if(move.row == baseRow &&  pieces[move.row+2*rowDirection][move.col]==null) {
-			legalVector.add(new Move(move.row+2*rowDirection, move.col));
+		// can move 2 spots if first turn
+		if(move.row == baseRow) {
+                if (pieces[move.row+2*rowDirection][move.col]==null) {
+                    legalVector.add(new Move(move.row+2*rowDirection, move.col));
+                }
 		}
-		// move forward 1 step
-		if(isOnBoard(move.row+rowDirection, move.col)&& 
-				pieces[move.row+rowDirection][move.col]==null) {
-			legalVector.add(new Move(move.row+rowDirection, move.col));
+                
+                 if (color == PieceColor.WHITE) {
+                 
+                 // move straight one move
+		if(isOnBoard(move.row+1, move.col)) {
+                if (pieces[move.row+1][move.col]==null) {
+                    legalVector.add(new Move(move.row+1, move.col));
+                    
+                    
+                }
 		}
-		//capture in 1 step diagonally
-		if(isOnBoard(move.row+rowDirection, move.col+1)&& 
-				pieces[move.row+rowDirection][move.col+1]!=null &&
-				pieces[move.row+rowDirection][move.col+1].color!=this.color) {
-			legalVector.add(new Move(move.row+rowDirection, move.col+1));
+		//cut diagonally
+		if(isOnBoard(move.row+1, move.col+1)&& 
+				pieces[move.row+1][move.col+1]!=null &&
+				pieces[move.row+1][move.col+1].color!=this.color) {
+			legalVector.add(new Move(move.row+1, move.col+1));
 		}
-		if(isOnBoard(move.row+rowDirection, move.col-1)&& 
-				pieces[move.row+rowDirection][move.col-1]!=null &&
-				pieces[move.row+rowDirection][move.col-1].color!=this.color) {
-			legalVector.add(new Move(move.row+rowDirection, move.col-1));
+		if(isOnBoard(move.row+1, move.col-1)&& 
+				pieces[move.row+1][move.col-1]!=null &&
+				pieces[move.row+1][move.col-1].color!=this.color) {
+			legalVector.add(new Move(move.row+1, move.col-1));
 		}	
-	}
+                 
+                 
+                 
+                 }
+                else if (color == PieceColor.BLACK) {
+                
+                
+              
+		// move straight one move
+		if(isOnBoard(move.row-1, move.col)) {
+                if (pieces[move.row-1][move.col]==null) {
+                    legalVector.add(new Move(move.row-1, move.col));
+                    
+                    
+                }
+		}
+		//cut diagonally
+		if(isOnBoard(move.row-1, move.col+1)&& 
+				pieces[move.row-1][move.col+1]!=null &&
+				pieces[move.row-1][move.col+1].color!=this.color) {
+			legalVector.add(new Move(move.row-1, move.col+1));
+		}
+		if(isOnBoard(move.row-1, move.col-1)&& 
+				pieces[move.row-1][move.col-1]!=null &&
+				pieces[move.row-1][move.col-1].color!=this.color) {
+			legalVector.add(new Move(move.row-1, move.col-1));
+		}	
+	}}
         
         
           @Override

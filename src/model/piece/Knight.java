@@ -14,7 +14,8 @@ public class Knight extends Piece{
 	private static int[] moveDirection = new int[] {-2, -1, 1, 2};
 	
 	public void getMoves(){
-		if(legalVector==null) legalVector = new ArrayList<Move>(); 
+		if(legalVector==null) 
+                    legalVector = new ArrayList<Move>(); 
 		else legalVector.clear();
 		for(int rowDirection: moveDirection)
 			for (int colDirection: moveDirection) {

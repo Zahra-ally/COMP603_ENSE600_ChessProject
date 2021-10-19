@@ -9,8 +9,10 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import model.Database;
 
 /**
  *
@@ -45,12 +47,12 @@ public class SignInFrame extends javax.swing.JFrame {
         return signInBtn;
     }
 
-    public JTextField getUserName() {
-        return username;
+    public String getUsername() {
+        return username.getText();
     }
 
-    public JPasswordField getPassword() {
-        return password;
+    public String getPassword() {
+        return password.getText();
     }
 
     /**
@@ -246,10 +248,28 @@ public class SignInFrame extends javax.swing.JFrame {
 
     private void signInBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signInBtnActionPerformed
         // TODO add your handling code here:
+        boolean login=false;
+        Database db=new Database();
+       // while(!login){
+        if( db.validLogin(getUsername(), getPassword())){
+       login=true;
+      
+       }
+       else{
+       JOptionPane.showMessageDialog(this, "Invalid Username or Password");
+       username.setText("");
+       password.setText("");
+       }
         
-         Home home= new Home();
+        if(login){
+            
+             Home home= new Home();
         home.setVisible(true);
         this.setVisible(false);
+        }
+    //}
+        
+        
        
         /*SignInFrame sif = new SignInFrame();
         try {

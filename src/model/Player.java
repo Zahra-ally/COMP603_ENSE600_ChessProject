@@ -7,7 +7,7 @@ import model.piece.Piece;
 public class Player{
 	 Game g;// the game associated with the player
 	 PieceColor color; //color
-	 public boolean isChecked; //whether my king is checked
+	 public boolean inCheck; //whether my king is checked
 	 int bottomRow,pawnRow; //row index of my bottom line and next line
 	 public ArrayList<Piece> piecesOwned; // pieces owned by the player (on the board)
 	 public King myKing; //the player's king piece
@@ -20,7 +20,7 @@ public class Player{
 	 public Player(Game game, PieceColor color){
 		 g = game;
 		 this.color = color;
-		 isChecked = false;
+		 inCheck = false;
 		 bottomRow = (this.color==PieceColor.WHITE)?0:g.board.nRows-1;
 		 pawnRow = (this.color==PieceColor.WHITE)?1:g.board.nRows-2;
 		 piecesOwned = new ArrayList<Piece>();
@@ -60,7 +60,7 @@ public class Player{
 	  * print the board after the movement
 	  */
 	 void play(){
-		 checkEndingCondition();
+		 noMovesResult();
 		 //let the player move a piece
 		 System.out.println("Please input index of piece and its destnation:");
 		 //int index = TextIO.getInt(), i=TextIO.getInt(), j=TextIO.getlnInt();
@@ -68,15 +68,15 @@ public class Player{
 		 move(index, i, j);
 		 //update the opponent's status of being checked
 		 int r = opponent.myKing.getRow(), c = opponent.myKing.getCol();
-		 opponent.isChecked = opponent.myKing.inCheck(r, c);
+		 opponent.inCheck = opponent.myKing.inCheck(r, c);
 		 //print the board
 		 g.board.toString();
 	}
 
-	public int checkEndingCondition() {
+	public int noMovesResult() {
 		boolean isMovable = checkMoveablePosition();
 		 if(!isMovable){
-			 if (isChecked){
+			 if (inCheck){
 				 // detect checkmate: not movable and checked
 				 System.out.println("Checkmate!");
 				 return 1;
@@ -98,7 +98,7 @@ public class Player{
 	 */
 	public boolean checkMoveablePosition() {
 		boolean isMovable = false; //whether the player still has legitimate movement
-		 if(!isChecked){ // if the king is not checked, can move any piece to movable positions
+		 if(!inCheck){ // if the king is not checked, can move any piece to movable positions
 			 for(Piece p: piecesOwned){
 				 System.out.println(piecesOwned.indexOf(p) +"\t" +p.id);
                                  p.getMoves();
@@ -130,11 +130,11 @@ public class Player{
 					 Piece temp = g.board.tiles[pos.row][pos.col];
 					 move(piecesOwned.indexOf(p), pos.row, pos.col);
 					 if(myKing.inCheck(myKing.getRow(), myKing.getCol())){
-						 moveBack(p, curRow, curCol, pos, temp);
+						 undo(p, curRow, curCol, pos, temp);
 						 it.remove(); // remove a movement which cannot avoid being checked
 					 }
 					 else{
-						 moveBack(p, curRow, curCol, pos, temp);
+						 undo(p, curRow, curCol, pos, temp);
 						 isMovable = printMoveablePosition(pos);
 					 } 
 				 }
@@ -159,7 +159,7 @@ public class Player{
 	 * move a piece p back from pos to (curRow, curCol)
 	 * restore the piece temp on position pos
 	 */
-	public void moveBack(Piece p, int curRow, int curCol, Move pos, Piece temp) {
+	public void undo(Piece p, int curRow, int curCol, Move pos, Piece temp) {
 		if (temp != null) {
 			 opponent.piecesOwned.add(temp);
 			 temp.isOnBoard = true;

@@ -62,7 +62,7 @@ public class Piece{
 			isOnBoard(i,j); 
 			i+=rowDirection, j+=colDirection){
 				if (pieces[i][j] == null){
-					moveable.add(new Move(i, j));//store blank tiles
+					moveable.add(new Move(i, j));
 				}
 				else if(this.getColor() == pieces[i][j].getColor()){
 					break; 

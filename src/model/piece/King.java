@@ -33,7 +33,7 @@ public class King extends Piece{
                                         if(nearPiece == null&&!inCheck(newRow, newCol))
                                              legalVector.add(new Move(newRow, newCol));
                                         else if(nearPiece != null)
-                                                if((this.getColor()!=nearPiece.getColor())&&!inCheck(newRow, newCol)) {//ensure that king is not in check
+                                                if((this.getColor()!=nearPiece.getColor())&&!inCheck(newRow, newCol)) {
                                             legalVector.add(new Move(newRow, newCol));
                                         }
 				}

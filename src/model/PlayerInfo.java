@@ -10,7 +10,9 @@ package model;
  * @author zahra
  */
 public class PlayerInfo {
-    private String fullname;
+    private String firstName;
+        private String lastName;
+
     private String username;
     private String email;
     private String password;
@@ -23,6 +25,11 @@ public class PlayerInfo {
         this.username=username;
     }
 
+    /*public PlayerInfo() {
+    
+    
+    }*/
+
   
 
     public String getOpName() {
@@ -33,12 +40,29 @@ public class PlayerInfo {
         this.opName = opName;
     }
     
-    public PlayerInfo(String fullname,String username ,String email, String password, String sRatio) {
-        this.fullname = fullname;
+    public PlayerInfo(String firstName,String lastName,String username ,String email, String password, String sRatio) {
+        this.firstName = firstName;
+        this.lastName=lastName;
         this.username=username;
         this.email = email;
         this.password = password;
         this.scoreRatio = sRatio;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public PlayerInfo(PieceColor color){
@@ -61,7 +85,7 @@ public class PlayerInfo {
 
    
     public String getFullname() {
-        return fullname;
+        return firstName+" "+lastName;
     }
 
     
@@ -83,5 +107,7 @@ public class PlayerInfo {
     public void setScore(String score,String opScore) {
     this.scoreRatio = score+":"+opScore;
     }
+
+    
 }
 

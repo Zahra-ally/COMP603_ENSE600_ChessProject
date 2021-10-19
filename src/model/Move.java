@@ -1,9 +1,9 @@
 package model;
 public class Move{
 	public int row, col;
-	public Move(int a, int b){
-		row = a;
-		col = b;
+	public Move(int r, int c){
+		row = r;
+		col = c;
 	}
 	
 	public boolean equals(Object p){

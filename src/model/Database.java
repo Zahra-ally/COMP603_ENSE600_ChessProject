@@ -22,7 +22,7 @@ import model.PlayerInfo;
  */
 public class Database {
       // Database Attributes
-    private final String dbURL = "jdbc:derby:Chess;create=true";
+    private final String dbURL = "jdbc:derby://localhost:1527/Players";
     private final String dbUsername = "chess";
     private final String dbPassword = "chess";
     private Connection conn;
@@ -31,7 +31,7 @@ public class Database {
     /**
      * Constructs a Database
      */
-    protected Database() {
+    public Database() {
         if (!connect()) {
             Object[] options = {"OK"};
             JOptionPane.showOptionDialog(null, "A connection to the database could not be established.", "", JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null, options, null);
@@ -40,11 +40,7 @@ public class Database {
         dbSetup();
     }
 
-    /**
-     * Initializes a connection with the database.
-     *
-     * @return true if connected, else false
-     */
+   
     protected boolean connect() {
         boolean success = false;
         try {
@@ -60,20 +56,18 @@ public class Database {
         return success;
     }
 
-    /**
-     * Configures Database Tables for Sudoku Game
-     */
+   
     protected void dbSetup() {
         try {
             // Create Player table if it doesn't exist
             if (!checkTableExists("Players")) {
                 //statement.executeUpdate("DROP TABLE Players"); // --> Can be used here to reset 'Players' table.
-                statement.executeUpdate("CREATE TABLE Players (Username VARCHAR(50), FirstName VARCHAR(50), Surname VARCHAR(50), Email VARCHAR(50), "
+                statement.executeUpdate("CREATE TABLE Players (Username VARCHAR(50), FirstName VARCHAR(50), LastName VARCHAR(50), Email VARCHAR(100), "
                     + "Password VARCHAR(50), OpponentName VARCHAR(50),  ScoreRatio VARCHAR(50)");
                 System.out.println("Players table was created.");
 
                 // Load sample data into Players table
-                statement.executeUpdate("INSERT INTO Players (Username, FirstName, Surname, Email,Password,OpponentName,ScoreRatio) VALUES "
+                statement.executeUpdate("INSERT INTO Players (Username, FirstName, LastName, Email,Password,OpponentName,ScoreRatio) VALUES "
                         + "('Em',Emily', 'emily@example.com', 'example','Quinn','9:1'), "
                         + "('TT',Thomas Tester', 'test@example.com', 'test','Peter','7:3'), "
                         + "('JJ',Jane Doe', 'doe@example.com', 'jane','Love,'4:10')");
@@ -116,20 +110,15 @@ public class Database {
         return flag;
     }
 
-    /**
-     * Checks if user credentials are correct
-     *
-     * @param email the user's email
-     * @param password the user's password
-     * @return true if details match database, else false
-     */
-    protected boolean validLogin(String username, String password) {
+   
+    public boolean validLogin(String username, String password) {
         boolean validLogin = false;
         try {
             ResultSet rs = statement.executeQuery("SELECT FirstName FROM Players WHERE Username = '" + username + "' AND Password = '" + password + "'");
             if (rs.next()) {
                 // Login is Valid
                 validLogin = true;
+                System.out.println("success login");
             }
             rs.close();
         } catch (SQLException ex) {
@@ -140,24 +129,17 @@ public class Database {
         return validLogin;
     }
 
-    /**
-     * Registers a user in the database (passwords are not hashed!)
-     *
-     * @param fullname the user's full name
-     * @param email the user's email address
-     * @param password the user's password
-     * @return true if successful registration, else false
-     */
-    protected boolean registerUser(String username,String firstName,String lastName,String email, String password) {
+   
+    public boolean registerUser(String username,String firstName,String lastName,String email, String password) {
         boolean success = false;
         try {
-            if (!validLogin(email, password)) {
+            if (!validLogin(username, password)) {
              
                   statement.executeUpdate("INSERT INTO Players "
-                        + "VALUES('" + username + "', '" +firstName+ "', '" +lastName+ "', '" +email+ "', '" + password + ",'0:0')");
+                        + "VALUES('" + username + "', '" +firstName+ "', '" +lastName+ "', '" +email+ "', '" + password + "', '" + "" + ",'0:0')");
                 success = true;
                 System.out.println("User " + firstName + " was successfully added into the database");
-            } else {
+            } else if (validLogin(username, password)) {
                 System.out.println("User " + firstName + " already exists, choose other credentials.");
             }
         } catch (SQLException ex) {
@@ -168,11 +150,23 @@ public class Database {
         return success;
     }
 
-    /**
-     * Update the user's score
-     *
-     * @param player the player affected
-     */
+    
+    public boolean addOpponent(String opName,PlayerInfo player) {
+        boolean added=false;
+    
+     try {
+            statement.executeUpdate("INSERT INTO Players" +"VALUES"+ player.getOpName() + " WHERE Username = '" + player.getUsername() + "'");
+             added = true;
+                System.out.println("User " + opName + " was successfully added into the database");
+        } catch (SQLException ex) {
+            System.err.println("SQL Exception: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        return added;
+    
+    }
+    
     protected void updateHighscore(PlayerInfo player) {
         try {
             statement.executeUpdate("UPDATE Players SET Score = " + player.getScoreRatio() + " WHERE Username = '" + player.getUsername() + "'");
@@ -218,7 +212,7 @@ public class Database {
                 ResultSet rs = statement.executeQuery("SELECT * FROM Players WHERE Username = '" + username + "' AND password = '" + pass + "'");
                 if (rs.next()) {
                     // Retrieve Player Information and Construct the player
-                    player = new PlayerInfo(rs.getString("FULLNAME"),rs.getString("PLAYERID"), rs.getString("EMAIL"), rs.getString("PASSWORD"), rs.getString("ScoreRatio"));
+                    player = new PlayerInfo(rs.getString("FirstName"),rs.getString("LastName"),rs.getString("Username"), rs.getString("Email"), rs.getString("Password"), rs.getString("ScoreRatio"));
                 }
                 rs.close();
             } catch (SQLException ex) {

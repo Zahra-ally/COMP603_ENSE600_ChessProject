@@ -4,69 +4,60 @@ import model.Move;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import model.*;
-import model.piece.*;
 
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
-import gui.View.Space;
-import gui.View;
+import gui.View.ChessBoard;
 
-/**
- * The action listener class of blocks on chess panel
- * @author Zijian Yao
- */
+
 class Controller implements ActionListener
 	{	
-		Space space = null;
+		ChessBoard cb = null;
 		View view;
 		
-		/**
-		 * class constructor: seting the game frame and block to which the listener attached
-		 * @param s	block
-		 * @param v	chess game frame
-		 */
-		Controller(Space space, View view){
-			this.space = space;
+		
+		Controller(ChessBoard cb, View view){
+			this.cb = cb;
 			this.view = view;
 		}
 	    
-		// The interface method to receive button clicks
+                @Override
 	    public void actionPerformed(ActionEvent e)
 	    {
-	      ImageIcon curPiece = this.space.getPiece();
-	      if (!view.isSelected){
-	    	  if(curPiece == null)  return;
-	    	  Move p = space.pos;
-                   boolean t ;
-                  if(view.g.board.tiles[p.row][p.col].color==PieceColor.WHITE)
-	    	 t=true;
+	      ImageIcon curPiece = this.cb.getPiece();
+	      if (view.movingPieceSelected){
+                  if(view.buffered != this.cb) { 
+                      if(view.destination!=null)
+                          if(!view.destination.contains(cb.move)) return;
+                      String name = landPieceSwitchTurn();
+                      int result = view.turn.noMovesResult();
+                      if(result > 0){
+                          recoverBlankColor();
+                          String prefix = (result == 1)?(name + " is checkmated!"):"Stalemate";
+                          endingConfirmDialog(result, prefix);
+                          return;
+                      }
+                  }
+                  deselectPiece();
+              }
+	      else{
+                  if(curPiece == null)
+                      return;
+                  Move move = cb.move;
+                  boolean t ;
+                  if(view.game.board.tiles[move.row][move.col].color==PieceColor.WHITE)
+                      t=true;
                   else
                       t=false;
-	    	  if(t != view.boolTurn)  return;
-	    	  view.destination = view.g.board.tiles[p.row][p.col].legalVector;
+                  if(t != view.bTurn)  return;
+                  view.destination = view.game.board.tiles[move.row][move.col].legalVector;
                   if(view.destination!=null)
-	    	  if(view.destination.size()==0)  return;
-	    	  selectPiece(p);
-	      }
-	      else{
-	    	  if(view.buffered != this.space) {
-                       if(view.destination!=null)
-	    		  if(!view.destination.contains(space.pos)) return;
-	    		  String name = landPieceSwitchTurn();
-		    	  int result = view.turn.checkEndingCondition();
-		    	  if(result > 0){
-		    		  recoverBlankColor();
-		    		  String prefix = (result == 1)?(name + " is checkmated!"):"Stalemate";
-		    		  endingConfirmDialog(result, prefix);
-		    		  return;
-		    	  } 
-	    	  }
-	    	  deselectPiece();
-	      }
+                      if(view.destination.size()==0)  return;
+                  selectPiece(move);
+              }
 	    }
 	    
 	    /**
@@ -74,7 +65,7 @@ class Controller implements ActionListener
 	     * allows the player in turn to move another piece
 	     */
 		public void deselectPiece() {
-			view.isSelected = false;
+			view.movingPieceSelected = false;
     		  view.buffered = null;
     		  recoverBlankColor();
     		  view.destination = null;
@@ -87,21 +78,21 @@ class Controller implements ActionListener
 		 * @return	the name of nexr player in turn
 		 */
 		public String landPieceSwitchTurn() {
-			view.lastCapturedIcon = this.space.getPiece();
-			  this.space.setPiece(view.buffered.getPiece());
+			view.lastCapturedIcon = this.cb.getPiece();
+			  this.cb.setPiece(view.buffered.getPiece());
 			  view.buffered.setPiece(null); 
-			  view.lastCaptured = view.g.board.tiles[space.pos.row][space.pos.col];
-			  view.targetPos = space.pos;
+			  view.lastCaptured = view.game.board.tiles[cb.move.row][cb.move.col];
+			  view.targetPos = cb.move;
 			  view.sourcePos = new Move(view.movingPiece.move.row,view.movingPiece.move.col);
-			  view.turn.move(view.turn.piecesOwned.indexOf(view.movingPiece) , space.pos.row, space.pos.col);
+			  view.turn.move(view.turn.piecesOwned.indexOf(view.movingPiece) , cb.move.row, cb.move.col);
 			  view.lastMoved = view.movingPiece;
 			  view.movingPiece = null;
 			  view.turn = view.turn.opponent;
-			  view.boolTurn = !view.boolTurn;
-			  String name = (view.boolTurn)?view.whiteName:view.blackName;
+			  view.bTurn = !view.bTurn;
+			  String name = (view.bTurn)?view.whiteName:view.blackName;
 			  view.status.setText(name + "'s turn");
 			  int r = view.turn.myKing.getRow(), c = view.turn.myKing.getCol();
-			  view.turn.isChecked = view.turn.myKing.inCheck(r, c);
+			  view.turn.inCheck = view.turn.myKing.inCheck(r, c);
 			return name;
 		}
 		
@@ -118,8 +109,8 @@ class Controller implements ActionListener
 			  int a=JOptionPane.showConfirmDialog(view,prefix + prompt);  
 			  if(a==JOptionPane.YES_OPTION){  
 				if(result == 1) 
-					view.addWinnerScore();
-				view.reloadGameAndGui(); 
+					view.updateScore();
+				view.refresh(); 
 			  } 
 			  else{
 				  System.exit(0);
@@ -136,9 +127,9 @@ class Controller implements ActionListener
 			for(Move pd: view.destination){
 	    		  view.blanks[pd.row][pd.col].setBackground(Color.cyan);
 	    	  }
-	    	  view.buffered = this.space;
-	    	  view.isSelected = true;
-	    	  view.movingPiece = view.g.board.tiles[p.row][p.col];
+	    	  view.buffered = this.cb;
+	    	  view.movingPieceSelected = true;
+	    	  view.movingPiece = view.game.board.tiles[p.row][p.col];
 	    	  view.canUndo = false;
 		}
 
