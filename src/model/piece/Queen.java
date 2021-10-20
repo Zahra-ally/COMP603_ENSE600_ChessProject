@@ -6,6 +6,12 @@ public class Queen extends Piece{
 		super(color,row, col);
 		id = "queen";
 	}
+        
+         /*
+        Adding all possible vectors for the queen the arraylist
+        Queen has a combination of the bishop and rooks moves
+        
+     */
 	
         @Override
 	public void getMoves(){

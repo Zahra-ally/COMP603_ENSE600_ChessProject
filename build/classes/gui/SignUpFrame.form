@@ -91,11 +91,11 @@
                           <Group type="103" groupAlignment="0" attributes="0">
                               <Group type="103" alignment="1" groupAlignment="1" max="-2" attributes="0">
                                   <Component id="lName" alignment="0" pref="188" max="32767" attributes="0"/>
-                                  <Component id="fName" alignment="0" max="32767" attributes="0"/>
+                                  <Component id="email" alignment="0" max="32767" attributes="0"/>
                               </Group>
-                              <Component id="email" alignment="1" min="-2" pref="188" max="-2" attributes="0"/>
+                              <Component id="fName" alignment="0" min="-2" pref="188" max="-2" attributes="0"/>
                               <Component id="password" alignment="1" min="-2" pref="188" max="-2" attributes="0"/>
-                              <Component id="username" alignment="1" min="-2" pref="188" max="-2" attributes="0"/>
+                              <Component id="username" alignment="0" min="-2" pref="188" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" attributes="0">
@@ -118,26 +118,26 @@
                           <Component id="jLabel7" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <EmptySpace min="-2" pref="135" max="-2" attributes="0"/>
+                          <EmptySpace min="-2" pref="168" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="lName" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
+                              <Component id="fName" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                               <Component id="fNameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="username" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
                               <Component id="lNameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="lName" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
                           </Group>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="3" attributes="0">
-                              <Component id="email" alignment="3" min="-2" pref="46" max="-2" attributes="0"/>
                               <Component id="usernameLbl" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="username" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
                   <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="fName" alignment="3" min="-2" pref="44" max="-2" attributes="0"/>
+                      <Component id="email" alignment="3" min="-2" pref="44" max="-2" attributes="0"/>
                       <Component id="emailLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
@@ -145,7 +145,7 @@
                       <Component id="password" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
                       <Component id="passwordLbl" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="55" pref="92" max="32767" attributes="0"/>
+                  <EmptySpace min="55" pref="59" max="32767" attributes="0"/>
                   <Component id="signUpBtn" min="-2" pref="66" max="-2" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="registeredBtn" min="-2" max="-2" attributes="0"/>
@@ -166,9 +166,9 @@
             <Property name="text" type="java.lang.String" value="SIGN UP"/>
           </Properties>
         </Component>
-        <Component class="javax.swing.JTextField" name="fName">
+        <Component class="javax.swing.JTextField" name="email">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fNameActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emailActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JTextField" name="lName">
@@ -181,9 +181,9 @@
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="usernameActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JTextField" name="email">
+        <Component class="javax.swing.JTextField" name="fName">
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="emailActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="fNameActionPerformed"/>
           </Events>
         </Component>
         <Component class="javax.swing.JButton" name="signUpBtn">

@@ -39,7 +39,9 @@ public class Database {
         }
         dbSetup();
     }
-
+/*
+    establishes a connection to database
+    */
    
     protected boolean connect() {
         boolean success = false;
@@ -82,10 +84,10 @@ public class Database {
     }
 
     /**
-     * Checks if chosen table exists in database
+     * Checks if  table exists in database
      *
-     * @param tableName the table to check for
-     * @return true if table exists, else false
+     * 
+     * @return true if table exists
      */
     protected boolean checkTableExists(String newTableName) {
          boolean flag = false;
@@ -98,7 +100,7 @@ public class Database {
             while (rsDBMeta.next()) {
                 String tableName = rsDBMeta.getString("TABLE_NAME");
                 if (tableName.compareToIgnoreCase(newTableName) == 0) {
-                    System.out.println(tableName + "  is there");
+                    System.out.println(tableName + "  exists");
                     flag = true;
                 }
             }
@@ -110,7 +112,9 @@ public class Database {
         return flag;
     }
 
-   
+   /*
+    Checks if login is valid i.e. if username and password match and exist in the database
+    */
     public boolean validLogin(String username, String password) {
         boolean validLogin = false;
         try {
@@ -128,19 +132,22 @@ public class Database {
         }
         return validLogin;
     }
-
+/*
+    Tries to register a new user. Checks is user exists already or not
+    returns true if successful and false if not
+    */
    
     public boolean registerUser(String username,String firstName,String lastName,String email, String password) {
         boolean success = false;
         try {
-            if (!validLogin(username, password)) {
-             
+           if (!UserExists(username)) {
                   statement.executeUpdate("INSERT INTO Players "
-                        + "VALUES('" + username + "', '" +firstName+ "', '" +lastName+ "', '" +email+ "', '" + password + "', '" + "" + ",'0:0')");
+                        + "VALUES('" + username + "', '" +firstName+ "', '" +lastName+ "', '" +email+ "', '" + password + "','n/a','0:0')");
                 success = true;
                 System.out.println("User " + firstName + " was successfully added into the database");
-            } else if (validLogin(username, password)) {
+          } else  {
                 System.out.println("User " + firstName + " already exists, choose other credentials.");
+                  //success = false;
             }
         } catch (SQLException ex) {
             System.err.println("SQL Exception: " + ex.getMessage());
@@ -149,13 +156,35 @@ public class Database {
         }
         return success;
     }
+public boolean UserExists(String username){
 
-    
-    public boolean addOpponent(String opName,PlayerInfo player) {
+ boolean userExists = false;
+        try {
+            ResultSet rs = statement.executeQuery("SELECT FirstName FROM Players WHERE Username = '" + username  + "'");
+            if (rs.next()) {
+                userExists = true;
+                System.out.println("user already exisits");
+            }
+            rs.close();
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+        return userExists;
+
+
+}
+    /*
+    Adds name of opponent to the database
+    returns true if successful and false if not
+    */
+    public boolean addOpponent(String opName) {
+        PlayerInfo player = new PlayerInfo(opName);
         boolean added=false;
     
      try {
-            statement.executeUpdate("INSERT INTO Players" +"VALUES"+ player.getOpName() + " WHERE Username = '" + player.getUsername() + "'");
+            statement.executeUpdate("UPDATE Players SET OpponentName='"+ opName+ "' WHERE Username = '" + player.getUsername() + "'");
              added = true;
                 System.out.println("User " + opName + " was successfully added into the database");
         } catch (SQLException ex) {
@@ -167,9 +196,9 @@ public class Database {
     
     }
     
-    protected void updateHighscore(PlayerInfo player) {
+    public void updateScoreRatio(String username,String ratio) {
         try {
-            statement.executeUpdate("UPDATE Players SET Score = " + player.getScoreRatio() + " WHERE Username = '" + player.getUsername() + "'");
+            statement.executeUpdate("UPDATE Players SET ScoreRation = '" + ratio + "' WHERE Username = '" + username + "'");
         } catch (SQLException ex) {
             System.err.println("SQL Exception: " + ex.getMessage());
         } catch (Exception ex) {
@@ -177,41 +206,16 @@ public class Database {
         }
     }
 
-    /**
-     * Retrieves high scores for ranking table
-     *
-     * @return the list of players' high scores ratios
-     */
-    protected ArrayList<PlayerInfo> getHighScores() {
-        ArrayList<PlayerInfo> players = new ArrayList<>();
-        try {
-            ResultSet rs = statement.executeQuery("SELECT * FROM Players");
-            while (rs.next()) {
-                players.add(new PlayerInfo(rs.getString("UserName"), rs.getString("ScoreRation")));
-            }
-            rs.close();
-        } catch (SQLException ex) {
-            System.err.println("SQL Exception: " + ex);
-        } catch (Exception ex) {
-            System.err.println(ex.getMessage());
-        }
-        return players;
-    }
+   
+    
 
-    /**
-     * Loads the player from the database
-     *
-     * @param email the player's email address
-     * @param pass the player's password
-     * @return a Player object of the current user
-     */
+    
     protected PlayerInfo loadPlayer(String username, String pass) {
         PlayerInfo player = null;
         if (validLogin(username, pass)) {
             try {
                 ResultSet rs = statement.executeQuery("SELECT * FROM Players WHERE Username = '" + username + "' AND password = '" + pass + "'");
                 if (rs.next()) {
-                    // Retrieve Player Information and Construct the player
                     player = new PlayerInfo(rs.getString("FirstName"),rs.getString("LastName"),rs.getString("Username"), rs.getString("Email"), rs.getString("Password"), rs.getString("ScoreRatio"));
                 }
                 rs.close();

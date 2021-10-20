@@ -31,7 +31,8 @@ class Controller implements ActionListener
 	      if (view.movingPieceSelected){
                   if(view.buffered != this.cb) { 
                       if(view.destination!=null)
-                          if(!view.destination.contains(cb.move)) return;
+                          if(!view.destination.contains(cb.move))
+                              return;
                       String name = landPieceSwitchTurn();
                       int result = view.turn.noMovesResult();
                       if(result > 0){
@@ -60,10 +61,7 @@ class Controller implements ActionListener
               }
 	    }
 	    
-	    /**
-	     * deselect the chozen piece to be moved
-	     * allows the player in turn to move another piece
-	     */
+	  
 		public void deselectPiece() {
 			view.movingPieceSelected = false;
     		  view.buffered = null;
@@ -72,11 +70,7 @@ class Controller implements ActionListener
     		  view.canUndo = true;
 		}
 		
-		/**
-		 * land the selected piece on the current block
-		 * switched turn to the other plauer
-		 * @return	the name of nexr player in turn
-		 */
+		
 		public String landPieceSwitchTurn() {
 			view.lastCapturedIcon = this.cb.getPiece();
 			  this.cb.setPiece(view.buffered.getPiece());
@@ -96,14 +90,7 @@ class Controller implements ActionListener
 			return name;
 		}
 		
-		/**
-		 * Display a pop-up window when the game end
-		 * show the result (checkmate or stalemate)
-		 * add 1 to the score of winner
-		 * allow palyers to start a new game 
-		 * @param result	1 = checkmate, 2 = stalemate
-		 * @param prefix	text of the ending condition
-		 */
+		
 		public void endingConfirmDialog(int result, String prefix) {
 			String prompt = " Do you want to start a new game?";
 			  int a=JOptionPane.showConfirmDialog(view,prefix + prompt);  
@@ -117,15 +104,10 @@ class Controller implements ActionListener
 			  }
 		}
 
-		/**
-		 * select the piece to be moved 
-		 * display all possible destination blocks in green
-		 * @param p	the location of the piece
-		 */
 		public void selectPiece(Move p) {
                      if(view.destination!=null)
 			for(Move pd: view.destination){
-	    		  view.blanks[pd.row][pd.col].setBackground(Color.cyan);
+	    		  view.cb[pd.row][pd.col].setBackground(Color.cyan);
 	    	  }
 	    	  view.buffered = this.cb;
 	    	  view.movingPieceSelected = true;
@@ -134,12 +116,10 @@ class Controller implements ActionListener
 		}
 
 		
-		/**
-		 * recover the original color of each block 
-		 */
+		
 		public void recoverBlankColor() {
 			for(Move pd: view.destination){
-				  view.blanks[pd.row][pd.col].setBackground(view.setSpaceColor((7-pd.row)*8+pd.col));
+				  view.cb[pd.row][pd.col].setBackground(view.setSpaceColor((7-pd.row)*8+pd.col));
 			  }
 		}
 	}

@@ -6,6 +6,7 @@ public class Move{
 		col = c;
 	}
 	
+        @Override
 	public boolean equals(Object p){
 		return this.row == ((Move)p).row && this.col == ((Move)p).col;
 	}

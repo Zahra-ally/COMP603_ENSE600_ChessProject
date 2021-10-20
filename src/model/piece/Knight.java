@@ -11,11 +11,18 @@ public class Knight extends Piece{
 		id = "knight";
 	}
 	
-	private static int[] moveDirection = new int[] {-2, -1, 1, 2};
+        /*
+                *Knight moves along an L shape 
+                *Piece can also "jump" over other pieces
+                *
+                *
+                **/
+	private static final int[] moveDirection = new int[] {-2, -1, 1, 2};
 	
+        @Override
 	public void getMoves(){
 		if(legalVector==null) 
-                    legalVector = new ArrayList<Move>(); 
+                    legalVector = new ArrayList<>(); 
 		else legalVector.clear();
 		for(int rowDirection: moveDirection)
 			for (int colDirection: moveDirection) {

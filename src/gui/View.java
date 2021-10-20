@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
+import model.Database;
 
 import model.Game;
 import model.Player;
@@ -18,13 +19,10 @@ import model.PlayerInfo;
 import model.piece.Piece;
 
 public class View extends JFrame {
-    
 
-    
-
-    public ChessBoard[][] blanks = new ChessBoard[8][8];
+    public ChessBoard[][] cb = new ChessBoard[8][8];
     public Game game;
-
+    Database db = new Database();
     public ChessBoard buffered = null;
     public Piece movingPiece = null;
     public boolean movingPieceSelected = false;
@@ -37,11 +35,26 @@ public class View extends JFrame {
     public Piece lastMoved = null;
     public ImageIcon lastCapturedIcon = null;
 
-    PlayerInfo pi;
-    //public String blackName = pi.getOpName();
-    //public String whiteName = pi.getUsername();
+    Opponent op = new Opponent();
+
+    /*  public String getWhiteName() {
+    SignInFrame signIn = new SignInFrame();
+    SignUpFrame signUp = new SignUpFrame();
+    String whiteName;
+    
+    if (signUp.getUsername() != null) {
+    whiteName = signUp.getUsername();
+    } else {
+    whiteName = signIn.getUsername();
+    }
+    
+    return whiteName;
+    }*/
     public String blackName = "Black";
+//op.getOpName();
+
     public String whiteName = "White";
+// getWhiteName();
 
     public int blackScore = 0, whiteScore = 0;
 
@@ -51,14 +64,13 @@ public class View extends JFrame {
     public JLabel blackscoreLabel = new JLabel(blackName
             + " score:" + blackScore + "\t\t\t");
 
-    
     private final int FRAME_WIDTH = 560, FRAME_HEIGHT = 600;
     private final Color LIGHT = Color.LIGHT_GRAY;
     private final Color DARK = Color.DARK_GRAY;
     private final String IMAGE_FOLDER = "src/images/";
     private final String[] pieceFormat = new String[]{"R", "N", "B",
         "Q", "K", "B", "N", "R"};
-    
+
     public JMenuItem restart;
     public JMenuItem forfeit;
     public JMenuItem undo;
@@ -67,9 +79,7 @@ public class View extends JFrame {
     public Player turn;
     public boolean bTurn;
 
-    
-    
-       public View() {
+    public View() {
         super();
         this.setSize(FRAME_WIDTH, FRAME_HEIGHT);
         this.setTitle("Chess Game");
@@ -84,6 +94,7 @@ public class View extends JFrame {
         this.bTurn = true;
 
     }
+
     /*
         Collection of buttons to imitate a chessboard
      */
@@ -114,8 +125,6 @@ public class View extends JFrame {
         }
 
     }
-
- 
 
     public JMenuBar setMenuBar() {
         JMenuBar mb = new JMenuBar();
@@ -158,7 +167,7 @@ public class View extends JFrame {
             int row = 7 - i / 8;
             int col = i % 8;
             ImageIcon icon = initPieceIcon(i);
-            blanks[row][col].setPiece(icon);
+            cb[row][col].setPiece(icon);
         }
     }
 
@@ -182,13 +191,15 @@ public class View extends JFrame {
             blackscoreLabel.setText(blackName
                     + " score:" + blackScore + "\t\t\t");
         }
+        String ratio = whiteScore + ":" + blackScore;
+        db.updateScoreRatio(whiteName, ratio);
     }
 
     public void setBack(JMenuItem back) {
         back.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Home home = new Home();
+                Opponent home = new Opponent();
                 home.setVisible(true);
                 View view = new View();
                 view.setVisible(false);
@@ -204,16 +215,17 @@ public class View extends JFrame {
                     return;
                 }
                 turn.opponent.undo(lastMoved, sourcePos.row, sourcePos.col, targetPos, lastCaptured);
-                ImageIcon curPiece = blanks[targetPos.row][targetPos.col].getPiece();
-                blanks[targetPos.row][targetPos.col].setPiece(lastCapturedIcon);
-                blanks[sourcePos.row][sourcePos.col].setPiece(curPiece);
+                ImageIcon curPiece = cb[targetPos.row][targetPos.col].getPiece();
+                cb[targetPos.row][targetPos.col].setPiece(lastCapturedIcon);
+                cb[sourcePos.row][sourcePos.col].setPiece(curPiece);
                 turn = turn.opponent;
                 bTurn = !bTurn;
-                 String name;
-                if(bTurn)
-                  name =   whiteName;
-                else
-                     name = blackName;
+                String name;
+                if (bTurn) {
+                    name = whiteName;
+                } else {
+                    name = blackName;
+                }
                 status.setText(name + "'s turn");
                 canUndo = false;
             }
@@ -230,25 +242,26 @@ public class View extends JFrame {
             ImageIcon icon = initPieceIcon(i);
             ChessBoard bt = new ChessBoard(setSpaceColor(i), new Move(row, col), icon);
             chessPanel.add(bt, i);
-            blanks[row][col] = bt;
+            cb[row][col] = bt;
         }
         return chessPanel;
     }
 
     public ImageIcon initPieceIcon(int i) {
         ImageIcon icon = null;
-         String color;
-          String piece;
+        String color;
+        String piece;
         if (!(i >= 16 && i < 48)) {
-            if(i < 16){
-            color="B";
+            if (i < 16) {
+                color = "B";
+            } else {
+                color = "W";
             }
-            else
-                color="W";
-            if(i >= 8 && i < 56)
-                piece="P";
-            else
-                piece=pieceFormat[i % 8] ;
+            if (i >= 8 && i < 56) {
+                piece = "P";
+            } else {
+                piece = pieceFormat[i % 8];
+            }
             try {
                 Image im = ImageIO.read(new File(IMAGE_FOLDER + color + piece + ".gif"));
                 icon = new ImageIcon(im);

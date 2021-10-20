@@ -13,13 +13,14 @@ public class Piece{
 	public Move move;
 	public PieceColor color;
 	public Piece[][] pieces;
-	/**
-	 * Class constructor
-	 * @param row		initial row position
-	 * @param col		initial column position
+	
+    /**
+     *Constructor
      * @param color
-	 */
-	public Piece( PieceColor color,int row, int col){
+     * @param row
+     * @param col
+     */
+    public Piece( PieceColor color,int row, int col){
 		this.move = new Move(row, col);
 		this.color = color;
                 
@@ -41,7 +42,7 @@ public class Piece{
     }
 	
 	/**
-	 * move the piece to a position
+	 * move the piece to a specified position
 	 */
 	public void move(Move pos){
 		this.move.row = pos.row;
@@ -49,12 +50,14 @@ public class Piece{
 	}
 	
 	/**
-	 *Storing legal moves
+	 *Storing legal vectors
 	 */
 	public ArrayList<Move> legalVector;
 	
 	
-	
+	/**
+	 *Generating legal moves 
+	 */
 	public ArrayList<Move> generateLegalMoves(int rowDirection, int colDirection){
 		ArrayList<Move> moveable = new ArrayList<Move>();
 		for(int i = move.row + rowDirection,

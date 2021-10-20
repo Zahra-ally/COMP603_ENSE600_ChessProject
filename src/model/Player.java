@@ -1,171 +1,190 @@
 package model;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 import model.piece.King;
 import model.piece.Piece;
-//import textio.TextIO;
-public class Player{
-	 Game g;// the game associated with the player
-	 PieceColor color; //color
-	 public boolean inCheck; //whether my king is checked
-	 int bottomRow,pawnRow; //row index of my bottom line and next line
-	 public ArrayList<Piece> piecesOwned; // pieces owned by the player (on the board)
-	 public King myKing; //the player's king piece
-	 public Player opponent; // the player's opponent player
-	 
-	 /**
-	  * Class constructor
-	  * @param white	set the color of the player, white = true, black = false
-	  */
-	 public Player(Game game, PieceColor color){
-		 g = game;
-		 this.color = color;
-		 inCheck = false;
-		 bottomRow = (this.color==PieceColor.WHITE)?0:g.board.nRows-1;
-		 pawnRow = (this.color==PieceColor.WHITE)?1:g.board.nRows-2;
-		 piecesOwned = new ArrayList<Piece>();
-		 for(int i=0; i<8; i++) {
-			 piecesOwned.add(g.board.tiles[bottomRow][i]);
-			 piecesOwned.add(g.board.tiles[pawnRow][i]);
-		 }
-		 myKing = (King) g.board.tiles[bottomRow][4];
-	 }
-	 
-	 /**
-	  *  set the opponent of the player 
-	  */
-	 public void setOpponent(Player op){
-		 opponent = op;
-	 }
-	
-	 /**
-	  * move a piece to position i j (assume valid input)
-	  * remove the existing piece from the board and opponent's list
-	  */
-	 public void move(int index, int i, int j){
-		 int curRow = piecesOwned.get(index).getRow(), curCol = piecesOwned.get(index).getCol();
-		 g.board.tiles[curRow][curCol] = null;
-		 piecesOwned.get(index).move(new Move(i,j));
-		 if(g.board.tiles[i][j]!=null){
-			 // assert g.board.chessBoard[i][j].isWhite is the opponent
-			 opponent.piecesOwned.remove(g.board.tiles[i][j]);
-		 }
-		 g.board.tiles[i][j] = piecesOwned.get(index);	 
-	 }
 
-	 /**
-	  * print the legitimate movement of all pieces for the player
-	  * detect check, checkmate, stalemate
-	  * let the player move a piece 
-	  * print the board after the movement
-	  */
-	 void play(){
-		 noMovesResult();
-		 //let the player move a piece
-		 System.out.println("Please input index of piece and its destnation:");
-		 //int index = TextIO.getInt(), i=TextIO.getInt(), j=TextIO.getlnInt();
-		 int index = 0, i = 0, j = 0;
-		 move(index, i, j);
-		 //update the opponent's status of being checked
-		 int r = opponent.myKing.getRow(), c = opponent.myKing.getCol();
-		 opponent.inCheck = opponent.myKing.inCheck(r, c);
-		 //print the board
-		 g.board.toString();
-	}
+public class Player {
 
-	public int noMovesResult() {
-		boolean isMovable = checkMoveablePosition();
-		 if(!isMovable){
-			 if (inCheck){
-				 // detect checkmate: not movable and checked
-				 System.out.println("Checkmate!");
-				 return 1;
-				 //System.exit(0);
-			 }
-			 else{
-				// detect stalement: not movable and not checked
-				 System.out.println("Stalemate!");
-				 return 2;
-				 //System.exit(0);
-			 }
-		 }
-		 return 0;
-	}
-	
-	/**
-	 * check if there are pieces that can move, and print the movement to user
-	 * @return	whether or not there are pieces that can move
-	 */
-	public boolean checkMoveablePosition() {
-		boolean isMovable = false; //whether the player still has legitimate movement
-		 if(!inCheck){ // if the king is not checked, can move any piece to movable positions
-			 for(Piece p: piecesOwned){
-				 System.out.println(piecesOwned.indexOf(p) +"\t" +p.id);
-                                 p.getMoves();
-				 //p.getMoveable();
-				 for(Move pos : p.legalVector){
-					 isMovable = printMoveablePosition(pos);
-			 	}
-				 System.out.println();
-			 }
-		 }
-		 else{// if the king is checked, must move to escape the check
-			   isMovable = findMovementEscapeCheck();
-		 }
-		return isMovable;
-	}
-	
-	/**
-	 * check if there are pieces that can move to escape check, and print the movement to user
-	 * @return	whether or not there are pieces that can move
-	 */
-	private boolean findMovementEscapeCheck() {
-		boolean isMovable = false;
-		for(Piece p: piecesOwned){
-			     System.out.println(piecesOwned.indexOf(p) +"\t" +p.id);
-				 p.getMoves();
-				 int curRow = p.getRow(), curCol = p.getCol();
-				 for(Iterator<Move> it = p.legalVector.iterator(); it.hasNext();){
-					 Move pos = it.next();
-					 Piece temp = g.board.tiles[pos.row][pos.col];
-					 move(piecesOwned.indexOf(p), pos.row, pos.col);
-					 if(myKing.inCheck(myKing.getRow(), myKing.getCol())){
-						 undo(p, curRow, curCol, pos, temp);
-						 it.remove(); // remove a movement which cannot avoid being checked
-					 }
-					 else{
-						 undo(p, curRow, curCol, pos, temp);
-						 isMovable = printMoveablePosition(pos);
-					 } 
-				 }
-				 System.out.println();
-			}
-		return isMovable;
-	}
+    Game game;
+    PieceColor color; //color of piece
+    public boolean inCheck;
+    int bottomRow, pawnRow;
+    public ArrayList<Piece> piecesOwned; // store the pieces owned by each player
+    public King myKing; //the king of the player
+    public Player opponent; //the opponent of the player
 
-	/**
-	 * print the position to user 
-	 * @param pos	the legitimate position that has been found
-	 * @return		whether the piece is movable or not
-	 */
-	public boolean printMoveablePosition(Move pos) {
-		boolean isMovable;
-		System.out.print(pos.row +", "+pos.col + "\t");
-		isMovable = true; //found a legitimate movement
-		return isMovable;
-	}
-	
-	 /**
-	 * move a piece p back from pos to (curRow, curCol)
-	 * restore the piece temp on position pos
-	 */
-	public void undo(Piece p, int curRow, int curCol, Move pos, Piece temp) {
-		if (temp != null) {
-			 opponent.piecesOwned.add(temp);
-			 temp.isOnBoard = true;
-		 }
-		 move(piecesOwned.indexOf(p), curRow, curCol);
-		 g.board.tiles[pos.row][pos.col] = temp;
-	}  
+    /**
+     *
+     * @param game
+     * @param color
+     */
+    public Player(Game game, PieceColor color) {
+        this.game = game;
+        this.color = color;
+        inCheck = false;
+        if (this.color == PieceColor.WHITE) {
+            bottomRow = 0;
+            pawnRow = 1;
+        } else {
+            bottomRow = 7;
+            pawnRow = 6;
+        }
+
+        piecesOwned = new ArrayList<Piece>();
+        for (int i = 0; i < 8; i++) {
+            piecesOwned.add(this.game.board.tiles[bottomRow][i]);
+            piecesOwned.add(this.game.board.tiles[pawnRow][i]);
+        }
+        myKing = (King) this.game.board.tiles[bottomRow][4];
+    }
+
+    /**
+     * set the opponent of the player
+     */
+    public void setOpponent(Player op) {
+        opponent = op;
+    }
+
+    /**
+     * 
+     * Move piece to specified position (i,j)
+     * 
+     */
+    public void move(int index, int i, int j) {
+        int curRow = piecesOwned.get(index).getRow(), curCol = piecesOwned.get(index).getCol();
+        game.board.tiles[curRow][curCol] = null;
+        piecesOwned.get(index).move(new Move(i, j));
+        if (game.board.tiles[i][j] != null) {
+            opponent.piecesOwned.remove(game.board.tiles[i][j]);
+        }
+        game.board.tiles[i][j] = piecesOwned.get(index);
+    }
+
+    /**
+     * display the legal moves of the piece and allow moves to be made
+     */
+    void play() {
+        noMovesResult();
+        int index = 0, i = 0, j = 0;
+        move(index, i, j);
+        int r = opponent.myKing.getRow();
+        int c = opponent.myKing.getCol();
+        opponent.inCheck = opponent.myKing.inCheck(r, c);
+        //print the board
+        game.board.toString();
+        boardTofile(game.board.toString());
+    }
+/*
+    Get the game outcome is no moves are avalible i.e. checkmate or stalemate
+    */
+    public int noMovesResult() {
+        boolean isMovable = canMove();
+        if (!isMovable) {
+            if (!inCheck) {
+                System.out.println("Stalemate!");
+                return 2;
+            } else {
+                System.out.println("Checkmate!");
+                return 1;
+            }
+        }
+        return 0;
+    }
+
+
+    /**
+     *Check if a legal move exists to escape check
+     */
+    private boolean canEscapeCheck() {
+        boolean bCanMove = false;
+        for (Piece piece : piecesOwned) {
+            System.out.println(piecesOwned.indexOf(piece) + "\t" + piece.id);
+            piece.getMoves();
+            int curRow = piece.getRow();
+            int curCol = piece.getCol();
+            for (Iterator<Move> it = piece.legalVector.iterator(); it.hasNext();) {
+                Move pos = it.next();
+                Piece temp = game.board.tiles[pos.row][pos.col];
+                move(piecesOwned.indexOf(piece), pos.row, pos.col);
+                if (myKing.inCheck(myKing.getRow(), myKing.getCol())) {
+                    undo(piece, curRow, curCol, pos, temp);
+                    it.remove(); // remove move that wont help escape check
+                } else {
+                    undo(piece, curRow, curCol, pos, temp);
+                    bCanMove = printLegalMoves(pos);
+                }
+            }
+            System.out.println();
+        }
+        return bCanMove;
+    }
+    
+    /**
+     * reverse move
+     */
+  
+  public void undo(Piece p, int curRow, int curCol, Move pos, Piece temp) {
+        if (temp != null) {
+            opponent.piecesOwned.add(temp);
+            temp.isOnBoard = true;
+        }
+        move(piecesOwned.indexOf(p), curRow, curCol);
+        game.board.tiles[pos.row][pos.col] = temp;
+    }
+    /**
+     print moves that are possible and legal
+     */
+    public boolean printLegalMoves(Move move) {
+        boolean canMove;
+        System.out.print(move.row + ", " + move.col + "\t");
+        canMove = true; //found a legitimate movement
+        return canMove;
+    }
+
+    
+    /**
+     * check if there are possible legal moves 
+     */
+    public boolean canMove() {
+        boolean bCanMove = false; //if player has a legal move to play
+        if (inCheck) {
+            bCanMove = canEscapeCheck();
+        } else { 
+            for (Piece piece : piecesOwned) {
+                System.out.println(piecesOwned.indexOf(piece) + "\t" + piece.id);
+                piece.getMoves();
+                for (Move pos : piece.legalVector) {
+                    bCanMove = printLegalMoves(pos);
+                }
+                System.out.println();
+            }
+        }
+        return bCanMove;
+    }
+    
+    
+    public void boardTofile(String board) {
+    
+    String sBoard = "";
+    
+    try {
+    
+    FileWriter boardWriter = new FileWriter("possiblemoves.txt");
+
+    
+    boardWriter.write(board);
+    
+    
+    boardWriter.close();
+    
+    } catch (IOException e) {
+    System.out.println("An error occurred.");
+    }
+    
+    }
 
 }

@@ -1,6 +1,6 @@
 package model;
 
-import gui.Home;
+import gui.Opponent;
 import gui.View;
 import gui.Welcome;
 import java.io.BufferedReader;
@@ -18,8 +18,12 @@ public class Game {
     public Board board = new Board();
     public Player player;
     public Player op;
-    public Home home = new Home();
+    public Opponent home = new Opponent();
 
+    
+    /*
+    Initialise the game
+    */
     public void initGame() {
 
         
@@ -60,8 +64,7 @@ public void gameLoop() {
         System.out.println(dbManager.connect());
         Welcome welcome=new Welcome();
         welcome.setVisible(true);
-        /*View view = new View();
-        view.setVisible(true);*/
+       
     }
     
     

@@ -13,10 +13,15 @@ public class King extends Piece{
 	
 	private static final int[] legalDirection = new int[] {-1, 1, 0};
 	
+         /*
+        Adding all possible vectors for the king the arraylist
+       King can move in one step in any direction
+        
+     */
         @Override
 	public void getMoves(){
 		if(legalVector==null)
-                    legalVector = new ArrayList<Move>(); 
+                    legalVector = new ArrayList<>(); 
 		else 
                     legalVector.clear();
 		for(int rowDirection: legalDirection)
@@ -41,6 +46,9 @@ public class King extends Piece{
 	}
 	/**
 	 * check if king is in check
+     * @param row
+     * @param col
+     * @return boolean value
 	 */
 	public boolean inCheck(int row, int col) {
               boolean checkedByRook=false;
@@ -105,7 +113,19 @@ public class King extends Piece{
 		
 	}
 	
-	
+	/*
+        Get pieces surrounding the king to check if it is in check
+        */
+
+    /**
+     *
+     * @param row
+     * @param col
+     * @param rDirection
+     * @param colDirection
+     * @return id of piece that could put it in check
+     */
+
 	public String getNearPieces(int row, int col, int rDirection, int colDirection) {
             
             boolean oneStepKill=false;

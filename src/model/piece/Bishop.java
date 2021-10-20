@@ -12,7 +12,7 @@ public class Bishop extends Piece{
         @Override
 	public void getMoves(){
 		 /*
-                 *
+                 * Adding all possible vectors for the bishop the arraylist
                  *Bishop moves diagonally: 
                  *North East, North West, South West and South East
                  *

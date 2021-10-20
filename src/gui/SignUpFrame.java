@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import model.Database;
+import model.PlayerInfo;
 
 /**
  *
@@ -22,13 +23,48 @@ public class SignUpFrame extends javax.swing.JFrame {
      */
     public SignUpFrame() {
         initComponents();
+        
     }
+    
+    //ensures all feilds have a suitable input
+public boolean validation(){
 
+if(getUsername().equals(null)||getUsername().equals(""))
+{
+return false;
+
+}
+if(getFirstName().equals(null)||getFirstName().equals(""))
+{
+return false;
+
+}
+
+if(getLastName().equals(null)||getLastName().equals(""))
+    {
+return false;
+
+}
+if(getPassword().equals(null)||getPassword().equals(""))
+    {
+return false;
+
+}
+
+if(getEmail().equals(null)||getEmail().equals(""))
+    {
+return false;
+
+}
+
+
+return true;
+}
     public void clear() {
-        fName.setText("");
+        email.setText("");
         lName.setText("");
         username.setText("");
-        email.setText("");
+        fName.setText("");
         password.setText("");
     }
 
@@ -47,7 +83,7 @@ public class SignUpFrame extends javax.swing.JFrame {
     }
 
     public String getFirstName() {
-        return fName.getText().trim();
+        return email.getText().trim();
     }
 
     public String getLastName() {
@@ -55,7 +91,7 @@ public class SignUpFrame extends javax.swing.JFrame {
     }
 
     public String getEmail() {
-        return email.getText().trim();
+        return fName.getText().trim();
     }
 
     public String getUsername() {
@@ -78,10 +114,10 @@ public class SignUpFrame extends javax.swing.JFrame {
         jDialog1 = new javax.swing.JDialog();
         jPanel1 = new javax.swing.JPanel();
         signUpLbl = new javax.swing.JLabel();
-        fName = new javax.swing.JTextField();
+        email = new javax.swing.JTextField();
         lName = new javax.swing.JTextField();
         username = new javax.swing.JTextField();
-        email = new javax.swing.JTextField();
+        fName = new javax.swing.JTextField();
         signUpBtn = new javax.swing.JButton();
         fNameLbl = new javax.swing.JLabel();
         lNameLbl = new javax.swing.JLabel();
@@ -111,9 +147,9 @@ public class SignUpFrame extends javax.swing.JFrame {
         signUpLbl.setForeground(new java.awt.Color(255, 255, 255));
         signUpLbl.setText("SIGN UP");
 
-        fName.addActionListener(new java.awt.event.ActionListener() {
+        email.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fNameActionPerformed(evt);
+                emailActionPerformed(evt);
             }
         });
 
@@ -129,9 +165,9 @@ public class SignUpFrame extends javax.swing.JFrame {
             }
         });
 
-        email.addActionListener(new java.awt.event.ActionListener() {
+        fName.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                emailActionPerformed(evt);
+                fNameActionPerformed(evt);
             }
         });
 
@@ -201,10 +237,10 @@ public class SignUpFrame extends javax.swing.JFrame {
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                 .addComponent(lName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 188, Short.MAX_VALUE)
-                                .addComponent(fName, javax.swing.GroupLayout.Alignment.LEADING))
-                            .addComponent(email, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(email, javax.swing.GroupLayout.Alignment.LEADING))
+                            .addComponent(fName, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(password, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(username, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(signUpBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)))
@@ -220,27 +256,27 @@ public class SignUpFrame extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel7))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(135, 135, 135)
+                        .addGap(168, 168, 168)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(lName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(fName, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(fNameLbl))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lNameLbl))
+                            .addComponent(lNameLbl)
+                            .addComponent(lName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(usernameLbl))))
+                            .addComponent(usernameLbl)
+                            .addComponent(username, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(fName, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(email, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(emailLbl))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(password, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(passwordLbl))
-                .addGap(55, 92, Short.MAX_VALUE)
+                .addGap(55, 59, Short.MAX_VALUE)
                 .addComponent(signUpBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(registeredBtn)
@@ -267,17 +303,17 @@ public class SignUpFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_lNameActionPerformed
 
-    private void fNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fNameActionPerformed
+    private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_fNameActionPerformed
+    }//GEN-LAST:event_emailActionPerformed
 
     private void usernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_usernameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_usernameActionPerformed
 
-    private void emailActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_emailActionPerformed
+    private void fNameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fNameActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_emailActionPerformed
+    }//GEN-LAST:event_fNameActionPerformed
 
     private void registeredBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registeredBtnActionPerformed
         // TODO add your handling code here:
@@ -289,66 +325,33 @@ public class SignUpFrame extends javax.swing.JFrame {
 
     private void signUpBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_signUpBtnActionPerformed
         // TODO add your handling code here:
+                PlayerInfo pi;
+
         Database db = new Database();
         boolean registered = false;
-
-        if ((getUsername()!= null||getUsername() == "")  &&(getFirstName()!= null||getFirstName() == "")  && (getLastName()!= null||getLastName() == "") 
-                && (getEmail()!= null||getEmail() == "") && (getPassword()!= null||getPassword() == "")) {
-            if (db.registerUser(getUsername(), getFirstName(), getLastName(), getEmail(), getPassword())) {
+//boolean canRegister=db.registerUser(getUsername(), getFirstName(), getLastName(), getEmail(), getPassword());
+        if (validation()) {
+            if (true) {
+              db.registerUser(getUsername(), getFirstName(), getLastName(), getEmail(), getPassword());
 
                 registered = true;
             } else {
                 JOptionPane.showMessageDialog(this, "User already exists. Sign In instead");
             }
-        }
+       }
         else
-                            JOptionPane.showMessageDialog(this, "All feilds are required");
+              JOptionPane.showMessageDialog(this, "All feilds are required");
 
         if (registered) {
-            Home home = new Home();
+            Opponent home = new Opponent();
             home.setVisible(true);
             this.setVisible(false);
+        pi= new PlayerInfo( getFirstName(),  getLastName(),getUsername(), getEmail(),getPassword(), "0:0");
         }
 
     }//GEN-LAST:event_signUpBtnActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(SignUpFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(SignUpFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(SignUpFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(SignUpFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new SignUpFrame().setVisible(true);
-            }
-        });
-    }
+  
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField email;
