@@ -329,9 +329,9 @@ return true;
 
         Database db = new Database();
         boolean registered = false;
-//boolean canRegister=db.registerUser(getUsername(), getFirstName(), getLastName(), getEmail(), getPassword());
+boolean canRegister=db.registerUser(getUsername(), getFirstName(), getLastName(), getEmail(), getPassword());
         if (validation()) {
-            if (true) {
+            if (canRegister) {
               db.registerUser(getUsername(), getFirstName(), getLastName(), getEmail(), getPassword());
 
                 registered = true;
